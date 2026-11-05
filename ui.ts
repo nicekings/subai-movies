@@ -232,7 +232,7 @@ for(const button of document.querySelectorAll('button[id^="check-"]')){
 ${themeScript}
 const el=id=>document.getElementById(id);
 function setView(){
- const hash=location.hash.slice(1),view=['uploads','activity','guide'].includes(hash)?hash:'config';
+ const hash=location.hash.slice(1),view=hash.startsWith('guide')?'guide':['uploads','activity'].includes(hash)?hash:'config';
  document.body.dataset.view=view;
  if(view==='activity')refresh();if(view==='uploads')loadUploads();
  for(const link of document.querySelectorAll('[data-nav]')){
