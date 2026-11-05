@@ -1,0 +1,19 @@
+services:
+  app:
+    build: .
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 7000
+    volumes: [data:/app/data]
+    restart: unless-stopped
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN}
+    ports: ["80:80", "443:443"]
+    volumes: ["./Caddyfile:/etc/caddy/Caddyfile:ro", "certs:/data"]
+    restart: unless-stopped
+volumes:
+  data:
+  certs:

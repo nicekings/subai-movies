@@ -1,0 +1,24 @@
+{
+  "name": "subai-movies",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.12"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env public.ts",
+    "test": "node --test test.ts recovery.test.ts direct.test.ts openSubs.test.ts nativeSubs.test.ts profiles.test.ts",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@fastify/multipart": "^9.0.0",
+    "fast-xml-parser": "^5.12.0",
+    "fastify": "^5.0.0",
+    "fflate": "^0.8.3",
+    "iso-639-3": "^3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "typescript": "^7.0.2"
+  }
+}
