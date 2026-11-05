@@ -6,6 +6,10 @@
 
 Tự host · Hồ sơ riêng cho từng người · Giao diện Việt / Anh
 
+### 🌐 [Mở web sử dụng](https://sub.nangcapvns.site/configure)
+
+Dùng ngay trên trình duyệt: tạo hồ sơ, cấu hình nguồn phụ đề rồi cài vào Stremio hoặc Nuvio. Không cần tự triển khai máy chủ.
+
 [Hướng dẫn sử dụng](#-bắt-đầu-sử-dụng) · [Chạy trên máy tính](#-chạy-trên-máy-tính) · [Đưa lên hosting](#-đưa-lên-hosting) · [Câu hỏi thường gặp](#-câu-hỏi-thường-gặp)
 
 </div>
