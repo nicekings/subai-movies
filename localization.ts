@@ -1,5 +1,7 @@
+import { guideEnglish } from './guide.ts';
 import { languages } from './preferences.ts';
 const english: Record<string, string> = {
+ ...guideEnglish, 'Tải lên phụ đề':'Upload subtitles',
  'Khôi phục cấu hình':'Restore configuration','Cấu hình của bạn':'Your configuration','Tạo cấu hình mới':'Create configuration','URL cài add-on đã lưu':'Saved add-on installation URL','Dán URL kết thúc bằng /manifest.json':'Paste a URL ending in /manifest.json',
  'Mỗi người dùng API key và thiết lập riêng. Giữ URL cài add-on để mở lại cấu hình trên máy khác. Người có URL này có thể sử dụng và chỉnh sửa hồ sơ của bạn.':'Each person uses their own API keys and settings. Keep your installation URL to restore your configuration on another device. Anyone with this URL can use and edit your profile.',
  'Dán URL đã dùng để cài add-on để mở lại hồ sơ của bạn.':'Paste your add-on installation URL to reopen your profile.',
