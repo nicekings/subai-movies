@@ -6,13 +6,23 @@
 
 Tự host · Hồ sơ riêng cho từng người · Giao diện Việt / Anh
 
-### 🌐 [Mở web sử dụng](https://sub.nangcapvns.site/configure)
-
-Dùng ngay trên trình duyệt: tạo hồ sơ, cấu hình nguồn phụ đề rồi cài vào Stremio hoặc Nuvio. Không cần tự triển khai máy chủ.
-
 [Hướng dẫn sử dụng](#-bắt-đầu-sử-dụng) · [Chạy trên máy tính](#-chạy-trên-máy-tính) · [Đưa lên hosting](#-đưa-lên-hosting) · [Câu hỏi thường gặp](#-câu-hỏi-thường-gặp)
 
 </div>
+
+---
+
+## 🌐 Dùng ngay trên web
+
+**Không cần tự cài máy chủ.**
+
+### https://sub.nangcapvns.site/configure
+
+Tạo hồ sơ → chọn nguồn phụ đề và ngôn ngữ → lưu → cài vào Stremio hoặc Nuvio.
+
+Muốn dịch bằng AI? Thêm API key của dịch vụ bạn dùng. Phí dịch và hạn mức phụ thuộc nhà cung cấp.
+
+> Muốn tự vận hành? Xem phần **Chạy trên máy tính** hoặc **Đưa lên hosting** bên dưới.
 
 ---
 
@@ -100,6 +110,25 @@ Trong **Cấu hình → Thêm phụ đề thủ công**:
 4. Bấm **Tải lên phụ đề**.
 
 Vào **Phụ đề của tôi** để tìm, tải xuống hoặc gỡ tệp. Gỡ tệp khỏi nguồn không xóa các bản dịch đã lưu.
+
+## 🧭 Các mục trên trang cấu hình
+
+| Mục | Bạn thao tác ở đây khi… |
+|---|---|
+| **Nguồn phụ đề** | Bật nguồn, nhập key và kiểm tra kết nối |
+| **API dịch AI** | Chọn nhà dịch, model và thứ tự dự phòng |
+| **Ngôn ngữ** | Chọn tiếng của phụ đề gốc và tiếng muốn xem |
+| **Cài đặt dịch** | Chỉnh định dạng gửi AI và ngữ cảnh |
+| **Tiến độ dịch** | Theo dõi tác vụ hoặc đọc lỗi chi tiết |
+| **Phụ đề của tôi** | Tìm, tải xuống hoặc gỡ tệp đã tải lên |
+| **Hướng dẫn** | Xem từng bước và câu hỏi thường gặp |
+
+### Mẹo cho lần đầu sử dụng
+
+- Bắt đầu với một ngôn ngữ nguồn để dễ chọn bản dịch.
+- Chọn đúng phim, mùa/tập và bản phát hành trước khi dịch.
+- Giữ **JSON theo ID**, tắt ngữ cảnh nhóm trước nếu chưa cần chỉnh nâng cao.
+- Lưu URL cài add-on để khôi phục trên thiết bị khác.
 
 ## 💻 Chạy trên máy tính
 
