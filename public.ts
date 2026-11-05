@@ -58,7 +58,13 @@ gateway.addHook('onRequest', async (req, reply) => {
 });
 gateway.get('/manifest.json', async (_, reply) => {
   reply.header('Access-Control-Allow-Origin', '*');
-  return addonManifest(origin + '/logo.png', true);
+  const manifest = addonManifest(origin + '/logo.png', true);
+  const signature = env.STREMIO_ADDONS_CLAIM_SIGNATURE?.trim();
+  if (!signature) return manifest;
+  return {
+    ...manifest,
+    stremioAddonsConfig: { issuer: 'https://stremio-addons.net', signature },
+  };
 });
 gateway.get('/logo.png', async (_, reply) => reply.type('image/png').header('Cache-Control', 'public, max-age=86400').send(addonLogo));
 
