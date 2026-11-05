@@ -1,30 +1,277 @@
+<div align="center">
+
 # SubAI Movies
 
-Dùng Node.js 24.12+ hoặc Docker Compose. Trong thư mục dự án:
+**Phụ đề có sẵn và dịch phụ đề bằng AI cho Stremio & Nuvio.**
 
-1. Chép `.env.example` thành `.env`. Điền mật khẩu mạnh vào `ADMIN_PASSWORD`. Tạo khóa bằng `node -p "require('crypto').randomBytes(32).toString('hex')"` và điền vào `APP_KEY`. Giữ khóa này khi sao lưu SQLite.
-2. Thử trên PC bằng `npm ci` và `node --env-file=.env server.ts`. Mở http://127.0.0.1:7000/configure rồi đăng nhập bằng tên **admin** và mật khẩu ở trên.
-3. Để dùng TV, trỏ tên miền tới máy chủ, mở cổng 80/443. Đặt DOMAIN thành tên miền và PUBLIC_URL thành https:// cùng tên miền đó, sau đó chạy `docker compose up -d --build`. Mở /configure bằng đúng tên miền.
-4. Với DEMO_MODE=1, cài add-on và mở **The Matrix (1999)**. Chọn mục AI có chữ DEMO, đợi vài giây rồi chọn lại. Tại giây 1–5 sẽ thấy “Xin chào!”. Trên Nuvio TV dán link manifest vào Add-ons và dùng trình phát nội bộ. Để kiểm tra tải trước, chọn hiển thị mọi phụ đề, tắt tự chọn ngôn ngữ, mở phim rồi kiểm tra trang tiến độ trước khi chọn mục AI. Lặp lại với ngôn ngữ ưu tiên. Nếu vẫn thấy thông báo chờ khi đã dịch xong, mở lại phim.
-5. Mở **Subtitles API Keys** để chọn nguồn. Bật SubDL hoặc SubSource, bấm biểu tượng bút, nhập API key và kiểm tra kết nối ngay trong hộp thoại. Mặc định mỗi nguồn theo mục **Ngôn ngữ**. Khi bật dịch Anh → Việt, nguồn tìm cả tiếng Anh và tiếng Việt. Chế độ chỉ xem phụ đề có sẵn chỉ tìm tiếng Việt. Có thể giới hạn thêm ngôn ngữ riêng cho từng nguồn. Bấm **Áp dụng** rồi **Lưu cấu hình**. OpenSubtitles V3 dùng ngay, V3 Pro cấu hình trong SubAI Movies, còn SubSense dùng link manifest. Chọn **Chỉ xem phụ đề có sẵn** để chỉ lấy ngôn ngữ muốn xem, hoặc mở **AI Translation API Keys** và chọn nhà dịch chính. Trong **Nhà cung cấp khác**, tích từng hãng để mở ô API key và chọn model. Dán key của từng dịch vụ đang bật. OpenRouter, DeepSeek, OpenAI, Gemini, Anthropic (Claude), xAI (Grok) và Mistral tự tải danh sách model sau khi xác thực key. Nút kiểm tra bên dưới mỗi key chỉ xác thực dịch vụ đó. Google Cloud Translate dùng key có quyền Cloud Translation Basic. Mở **Ngôn ngữ** để chọn 1–3 nguồn và 1–6 đích. Trong **Cài đặt dịch**, chọn JSON hoặc XML cho model AI. Bấm **Lưu cấu hình**. Khi một nhóm câu lỗi, ứng dụng thử các nhà cung cấp đã tích theo thứ tự hiển thị cho nhóm đó. Nhóm kế tiếp dùng lại nhà dịch chính.
-6. Tải tệp SRT/VTT UTF-8 lên nếu cần, nhập đúng IMDb và mùa/tập. Chọn đúng bản WEB-DL/BluRay và xem thử đầu, giữa, cuối phim. Khi hết hạn mức hoặc key sai, trang quản lý hiện lỗi và cho thử lại từ nhóm đã lưu.
-7. Thu hồi link yêu cầu cài lại trên các thiết bị. Dừng app trước khi sao lưu thư mục data và giữ riêng APP_KEY. Chạy `npm test` để thử bằng HTTP trên máy, không cần key.
+Tự host · Hồ sơ riêng cho từng người · Giao diện Việt / Anh
 
-Trong trình phát, chọn **[Có sẵn]** để xem ngay. **[Tạo bản dịch AI]** khởi động dịch và **[Đã dịch AI]** mở kết quả đã lưu. Một số trình phát chỉ hiện ngôn ngữ ở danh sách ngoài; mở chi tiết từng bản phụ đề để xem nhãn.
+[Hướng dẫn sử dụng](#-bắt-đầu-sử-dụng) · [Chạy trên máy tính](#-chạy-trên-máy-tính) · [Đưa lên hosting](#-đưa-lên-hosting) · [Câu hỏi thường gặp](#-câu-hỏi-thường-gặp)
 
-**OpenSubtitles**: chọn V3 để dùng ngay hoặc Auth để đăng nhập trực tiếp với OpenSubtitles.com. Auth cần username, password và API key ứng dụng (có thể đặt OPENSUBTITLES_API_KEY trên máy chủ). Bấm kiểm tra rồi lưu. Với **V3 Pro**, đặt tên, timeout, ngôn ngữ, loại người đăng, tùy chọn bản đã dịch AI và tự điều chỉnh thời gian theo hash. Mặc định SubAI tự sinh manifest, chỉ nhập URL khi chủ động bật ghi đè.
+</div>
 
-**Custom Provider** dùng được cho cả nhà dịch chính và danh sách nhà cung cấp khác. Nhập URL API tương thích OpenAI (ví dụ `http://localhost:11434/v1` khi Ollama và SubAI cùng chạy trên máy), tên model và API key nếu cần. Trong Docker Desktop, dùng `host.docker.internal` thay cho `localhost` để kết nối tới dịch vụ trên máy chủ. Nút **Kiểm tra** gửi một câu dịch bằng model và định dạng đã chọn. Bấm **Lưu cấu hình** để dùng khi xem phim.
+---
 
-Trong **04 · Cài đặt dịch → Nâng cao**, **Dùng ngữ cảnh từ nhóm trước** mặc định tắt. Khi bật, model AI nhận tối đa 3 câu gốc và bản dịch ở cuối nhóm ngay trước để tham khảo. Trong **Custom Provider**, thời gian chờ mặc định là **60 giây**, chỉnh được từ **60 đến 300 giây** cho mỗi yêu cầu kiểm tra hoặc dịch.
+## ✨ Ứng dụng làm được gì?
 
-Trong **Tiến độ dịch**, bấm **Xem chi tiết** để xem số nhóm và số đoạn đã dịch. Khi tác vụ gặp lỗi, bấm **Thử lại** để tiếp tục từ nhóm đã lưu.
+| Bạn cần | SubAI Movies hỗ trợ |
+|---|---|
+| Xem phụ đề đã có | Tìm từ các nguồn phụ đề đã bật |
+| Dịch sang ngôn ngữ muốn xem | Dùng model AI bạn chọn, giữ mốc thời gian gốc |
+| Dùng tệp của mình | Tải SRT/VTT lên, quản lý và tải xuống |
+| Theo dõi tác vụ | Xem tiến độ, nhóm đã lưu và lỗi dịch |
+| Dùng trên nhiều thiết bị | Cài và khôi phục hồ sơ bằng cùng một URL |
 
+**Không cần tải video lên máy chủ.** Ứng dụng xử lý tệp phụ đề; hiện chưa tạo phụ đề từ giọng nói hoặc tự căn lại thời gian.
 
-## Hồ sơ cá nhân trên máy chủ công khai
+## 🚀 Bắt đầu sử dụng
 
-`npm start` chạy cổng nhiều hồ sơ qua `public.ts`. Mở `/configure` để tạo hồ sơ. Trình duyệt nhớ hồ sơ bằng cookie HttpOnly trong một năm. Mở `/profiles` để đổi hồ sơ hoặc dán URL cài add-on vào Khôi phục cấu hình trên máy khác. URL là quyền truy cập hồ sơ, nên chỉ chia sẻ với người được phép sử dụng và chỉnh sửa cấu hình đó.
+Nếu đã có máy chủ SubAI Movies, mở trang `/configure`, tạo hồ sơ rồi chọn một trong hai cách:
 
-Cấu hình cũ trong `data/subai.db` được nhận diện tự động. Dùng URL cài cũ để khôi phục. Hồ sơ mới lưu riêng trong `data/profiles/`, danh mục lưu tại `data/profiles.db`. Sao lưu toàn bộ thư mục data cùng APP_KEY. Tác vụ chưa hoàn thành được tiếp tục khi khởi động lại. Mặc định tối đa 100 hồ sơ, chỉnh bằng MAX_PROFILES. Mỗi hồ sơ hoạt động có một phiên dịch vụ và SQLite riêng trong cùng tiến trình.
+### Cách 1 — Chỉ xem phụ đề có sẵn
 
-Để triển khai HTTPS, đặt DOMAIN và PUBLIC_URL theo tên miền rồi chạy Docker Compose. Việc tạo hồ sơ mới bắt đầu với cấu hình trống. Máy chủ cung cấp API key OpenSubtitles qua biến môi trường chỉ cho hồ sơ cũ.
+1. Mở **Nguồn phụ đề**, bật **OpenSubtitles V3** ở chế độ V3 để dùng không cần API key.
+2. Bật **Chỉ xem phụ đề có sẵn (không dùng AI)**.
+3. Trong **Ngôn ngữ**, chọn các tiếng bạn muốn đọc khi xem phim.
+4. Bấm **Lưu cấu hình** và cài add-on vào ứng dụng.
+
+> Chỉ có kết quả khi nguồn tìm được phụ đề đúng phim và ngôn ngữ bạn chọn. SubDL không bắt buộc; bạn có thể bật thêm nguồn để tăng khả năng tìm thấy.
+
+### Cách 2 — Dịch phụ đề bằng AI
+
+1. Bật ít nhất một nguồn phụ đề dùng được, hoặc tải tệp riêng lên.
+2. Tắt **Chỉ xem phụ đề có sẵn (không dùng AI)**.
+3. Mở **API dịch AI** → chọn nhà dịch → nhập key → **Kiểm tra** → chọn model.
+4. Chọn **ngôn ngữ nguồn** của phụ đề gốc và **ngôn ngữ muốn xem**.
+5. Bấm **Lưu cấu hình**. Trong trình phát, chọn **Tạo bản dịch AI**.
+
+```text
+Phụ đề gốc → Model AI → Phụ đề bằng ngôn ngữ bạn chọn
+                       Giữ thời gian của bản gốc
+```
+
+**Phân biệt hai loại dịch vụ:**
+
+| Dịch vụ | Dùng để làm gì? | Cần gì? |
+|---|---|---|
+| OpenSubtitles V3 — chế độ V3 | Lấy phụ đề gốc / có sẵn | Không cần API key |
+| SubDL, SubSource | Lấy phụ đề gốc / có sẵn | API key của từng nguồn |
+| OpenSubtitles — chế độ Auth | Kết nối tài khoản OpenSubtitles.com | Tài khoản và API key ứng dụng |
+| OpenSubtitles V3 Pro | Lấy phụ đề qua add-on Pro | Cấu hình trong hộp thoại của nguồn |
+| SubSense | Lấy phụ đề qua add-on ngoài | URL manifest đã cấu hình |
+| OpenRouter, Gemini, DeepSeek, OpenAI, Claude, Grok, Mistral, Google Cloud Translate | Dịch lời thoại | API key của dịch vụ dịch |
+| Custom Provider | Dùng API tương thích OpenAI | URL, model và key nếu máy chủ yêu cầu |
+
+Key của nguồn phụ đề **không thay thế** key của dịch vụ AI.
+
+### Cài vào Stremio / Nuvio
+
+| Ứng dụng | Thao tác sau khi lưu cấu hình |
+|---|---|
+| **Stremio** | Bấm **Cài vào Stremio**, xác nhận trong ứng dụng |
+| **Nuvio** | Bấm **Sao chép URL**, thêm URL đó trong mục **Add-ons** của Nuvio |
+| **Máy khác** | Mở trang chủ SubAI → **Khôi phục cấu hình** → dán URL cài đã lưu |
+
+> Giữ URL cài add-on riêng tư. Người có URL có thể sử dụng và chỉnh sửa hồ sơ của bạn. Thu hồi URL sẽ yêu cầu cập nhật lại trên các thiết bị.
+
+### Khi đang xem phim
+
+| Nhãn phụ đề | Ý nghĩa |
+|---|---|
+| **[Có sẵn]** | Chọn để xem ngay, không gọi AI |
+| **[Tạo bản dịch AI]** | Bắt đầu dịch khi trình phát tải mục này |
+| **[Đã dịch AI]** | Dùng kết quả đã lưu |
+
+Nếu hiện **Đang dịch**, mở tab **Tiến độ dịch**. Khi hoàn tất, chọn lại phụ đề; nếu ứng dụng vẫn giữ thông báo cũ, mở lại trình phát.
+
+Một số trình phát tự tải phụ đề theo ngôn ngữ ưu tiên và có thể kích hoạt dịch AI. Kiểm tra tùy chọn tự chọn phụ đề nếu muốn chọn thủ công.
+
+### Thêm phụ đề thủ công
+
+Trong **Cấu hình → Thêm phụ đề thủ công**:
+
+1. Nhập IMDb đúng phim, ví dụ `tt23289160`. Phim bộ dùng `mã:mùa:tập`, ví dụ `tt1234567:1:2`.
+2. Nhập bản phát hành nếu biết, hoặc để trống để dùng tên tệp.
+3. Chọn đúng ngôn ngữ của tệp và tệp **SRT/VTT**.
+4. Bấm **Tải lên phụ đề**.
+
+Vào **Phụ đề của tôi** để tìm, tải xuống hoặc gỡ tệp. Gỡ tệp khỏi nguồn không xóa các bản dịch đã lưu.
+
+## 💻 Chạy trên máy tính
+
+**Yêu cầu:** Node.js **24.12 trở lên** và npm.
+
+### 1. Lấy mã nguồn và cài thư viện
+
+```sh
+git clone https://github.com/nicekings/subai-movies.git
+cd subai-movies
+npm ci
+```
+
+### 2. Tạo cấu hình máy chủ
+
+Sao chép `.env.example` thành `.env`. Tạo khóa mã hóa bằng:
+
+```sh
+node -p "require('crypto').randomBytes(32).toString('hex')"
+```
+
+Điền `.env`:
+
+```dotenv
+ADMIN_PASSWORD=thay-bang-mat-khau-manh-cua-ban
+APP_KEY=dan-khoa-64-ky-tu-hex-vua-tao
+PUBLIC_URL=http://127.0.0.1:7000
+DEMO_MODE=0
+```
+
+`APP_KEY` và `ADMIN_PASSWORD` là thiết lập của người vận hành máy chủ. Người dùng nhập API key riêng trên web sau khi tạo hồ sơ.
+
+### 3. Chạy ứng dụng
+
+```sh
+npm start
+```
+
+Mở **http://127.0.0.1:7000/configure** → tạo hồ sơ → cấu hình theo hướng dẫn bên trên.
+
+> `npm start` chạy chế độ nhiều hồ sơ qua `public.ts`. URL `127.0.0.1` chỉ dùng trên chính máy chạy ứng dụng; để dùng trên TV hoặc máy khác, triển khai URL HTTPS có thể truy cập từ thiết bị đó.
+
+## ☁️ Đưa lên hosting
+
+### cPanel / CloudLinux có Setup Node.js App
+
+1. Tạo tên miền phụ, trỏ DNS về hosting và bật SSL.
+2. Tạo ứng dụng trong **Setup Node.js App**:
+
+   | Trường | Giá trị |
+   |---|---|
+   | Node.js version | **24.12+** |
+   | Application mode | **Production** |
+   | Application root | Ví dụ `subai-movies` |
+   | Application URL | Tên miền phụ của bạn |
+   | Application startup file | **`app.cjs`** |
+
+3. Tải mã nguồn vào Application root, gồm các tệp `.ts`, `app.cjs`, `package.json` và `package-lock.json`. Không tải `node_modules` từ Windows lên hosting.
+4. Thêm biến môi trường:
+
+   | Biến | Giá trị |
+   |---|---|
+   | `ADMIN_PASSWORD` | Mật khẩu mạnh của máy chủ |
+   | `APP_KEY` | Khóa 64 ký tự hex đã tạo |
+   | `PUBLIC_URL` | `https://sub.example.com` — thay bằng tên miền của bạn |
+   | `DATA_DIR` | `./data` |
+   | `DEMO_MODE` | `0` |
+
+5. Bấm **Run NPM Install**, rồi **Restart**.
+6. Mở `https://sub.example.com/configure` bằng tên miền thật của bạn.
+
+Nếu cPanel báo không truy cập được ứng dụng, kiểm tra DNS/SSL trước, sau đó xem log khởi động. Shared hosting có thể giới hạn tài nguyên hoặc dừng tiến trình khi nhàn rỗi; cần kiểm tra tác vụ dịch dài trên gói hosting thực tế.
+
+### VPS với Docker Compose
+
+Chuẩn bị `.env` như phần local, đổi:
+
+```dotenv
+DOMAIN=sub.example.com
+PUBLIC_URL=https://sub.example.com
+```
+
+Trỏ DNS tới VPS, mở cổng **80/443**, rồi chạy:
+
+```sh
+docker compose up -d --build
+```
+
+Caddy xử lý HTTPS. Dữ liệu ứng dụng nằm trong Docker volume `data` được Compose quản lý.
+
+### Cập nhật phiên bản
+
+- Sao lưu dữ liệu trước khi cập nhật.
+- Thay mã nguồn, giữ nguyên `.env`, `APP_KEY` và dữ liệu.
+- cPanel: chạy lại cài thư viện nếu dependencies thay đổi, rồi **Restart**.
+- Docker: chạy lại `docker compose up -d --build`.
+- Trình duyệt: **Ctrl + F5** nếu vẫn thấy giao diện cũ.
+
+## 💾 Dữ liệu và sao lưu
+
+Mặc định, ứng dụng lưu trong thư mục `data` ở Application root:
+
+| Đường dẫn | Nội dung |
+|---|---|
+| `data/profiles.db` | Danh mục hồ sơ |
+| `data/profiles/` | Dữ liệu riêng của các hồ sơ mới |
+| `data/subai.db` | Dữ liệu hồ sơ cũ, nếu có |
+
+Nếu đặt `DATA_DIR`, dữ liệu nằm ở đường dẫn đó. Với Docker, sao lưu volume dữ liệu thay vì thư mục local.
+
+**Dừng ứng dụng trước khi sao lưu, sao lưu toàn bộ dữ liệu và giữ riêng `APP_KEY`.** Mất khóa này sẽ không giải mã được các API key đã lưu. Không đưa `.env`, database hoặc URL hồ sơ lên GitHub.
+
+## ❓ Câu hỏi thường gặp
+
+<details>
+<summary><strong>Dịch AI có mất phí không?</strong></summary>
+
+Có thể có. Chi phí phụ thuộc dịch vụ và model bạn dùng. Thử lại nhóm lỗi hoặc chuyển nhà dịch dự phòng cũng có thể tính phí. Bản dịch đã lưu phù hợp được dùng lại. Nguồn phụ đề có thể có hạn mức riêng.
+
+</details>
+
+<details>
+<summary><strong>Vì sao phim có tiếng Anh nhưng không có phụ đề?</strong></summary>
+
+Âm thanh và phụ đề là hai dữ liệu khác nhau. SubAI cần một tệp phụ đề gốc để dịch; hiện không nhận dạng giọng nói. Kiểm tra đúng IMDb, phần phim, mùa/tập, ngôn ngữ, nguồn và API key.
+
+</details>
+
+<details>
+<summary><strong>AI dịch xong nhưng phụ đề lệch?</strong></summary>
+
+AI giữ mốc thời gian của tệp gốc. Chọn bản phát hành khớp video như WEB-DL hoặc BluRay, hoặc tải một tệp phù hợp hơn. Tên bản phát hành khớp không bảo đảm thời gian khớp hoàn toàn.
+
+</details>
+
+<details>
+<summary><strong>Bật nhiều nhà cung cấp thì dùng bên nào trước?</strong></summary>
+
+AI dùng nhà dịch chính trước. Khi nhóm câu lỗi, thử nhà cung cấp khác theo thứ tự đã lưu; nhóm kế tiếp dùng lại nhà dịch chính. Kéo tên hoặc dùng mũi tên để đổi thứ tự, rồi lưu.
+
+Nguồn phụ đề có cách xếp hạng riêng: ưu tiên tên bản phát hành khớp, sau đó ngôn ngữ và thứ tự nguồn khi tương đương. Đây không phải luôn là tìm lần lượt từng nguồn.
+
+</details>
+
+<details>
+<summary><strong>Custom Provider cài thế nào?</strong></summary>
+
+Nhập URL API tương thích OpenAI, model và key nếu cần. Máy chủ SubAI phải truy cập được URL này. Ví dụ Ollama chạy cùng máy: `http://localhost:11434/v1`; trong Docker Desktop có thể dùng `host.docker.internal` để tới máy chủ.
+
+Nút Kiểm tra gửi một yêu cầu nhỏ bằng model đã chọn. Timeout mặc định 60 giây, có thể chỉnh tới 300 giây.
+
+</details>
+
+<details>
+<summary><strong>Người mới nên để cài đặt dịch thế nào?</strong></summary>
+
+Giữ **JSON theo ID** và tắt **ngữ cảnh nhóm trước**. Chỉ thử XML nếu model thường trả JSON không hợp lệ. Ngữ cảnh có thể giúp giữ tên riêng và cách xưng hô nhưng dùng thêm token.
+
+</details>
+
+<details>
+<summary><strong>“Nhóm đã lưu” có phải số lần bấm không?</strong></summary>
+
+Không. Đó là số nhóm lời thoại đã dịch và lưu. Thời gian còn lại chỉ là ước tính. Mở **Tiến độ dịch → Xem chi tiết** để xem lỗi; tác vụ lỗi có thể thử lại từ các nhóm đã lưu.
+
+</details>
+
+## 🛠️ Kiểm tra mã nguồn
+
+```sh
+npm run typecheck
+npm test
+```
+
+Các bài kiểm tra dùng mô phỏng API, không cần API key thật. Chúng không thay thế việc thử trên Stremio/Nuvio và dịch vụ bạn sử dụng.
+
+---
+
+**Cần trợ giúp?** Gửi IMDb, tên bản phát hành, ứng dụng/thiết bị và nội dung lỗi. Không gửi API key hoặc URL cài chứa quyền truy cập hồ sơ.
